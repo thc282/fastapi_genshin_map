@@ -58,7 +58,7 @@ async def create_genshin_map():
     # mark_trans_pic = Image.open(TEXT_PATH / "mark_trans.png")
 
     # 指定地圖id或留空拿全部地圖
-    desired_map_ids = {35}
+    desired_map_ids = {}
     
     for map_id in models.MapID:
         if map_id.value in desired_map_ids or desired_map_ids == {}:
