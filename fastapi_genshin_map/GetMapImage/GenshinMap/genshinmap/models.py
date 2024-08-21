@@ -4,21 +4,24 @@ from enum import IntEnum
 from typing import List, Tuple, Optional, NamedTuple
 
 from pydantic import HttpUrl, BaseModel, validator
+import json
 
 
 class MapID(IntEnum):
-    """地图 ID"""
+    """地圖 ID"""
 
     teyvat = 2
     """提瓦特"""
     enkanomiya = 7
-    """渊下宫"""
+    """淵下宫"""
     chasm = 9
-    """层岩巨渊·地下矿区"""
+    """層岩巨淵·地下礦區"""
     # golden_apple_archipelago = 12
-    """金苹果群岛"""
+    """金蘋果群島"""
     sea_of_bygone_eras = 34
-    """旧日之海"""
+    """舊日之海"""
+    Simulanka = 35
+    """希穆蘭卡"""
 
 
 class Label(BaseModel):
@@ -90,15 +93,22 @@ class MapInfo(BaseModel):
     name: str
     parent_id: int
     depth: int
-    detail: Maps
+    detail: Optional[Maps]
     node_type: int
     children: list
     icon: Optional[HttpUrl]
     ch_ext: Optional[str]
 
     @validator("detail", pre=True)
-    def detail_str_to_maps(cls, v):
-        return Maps.parse_raw(v)
+    def parse_detail(cls, v):
+        if isinstance(v, str):
+            if v == "":
+                return None
+            try:
+                return Maps.parse_raw(v)
+            except json.JSONDecodeError:
+                return v
+        return v
 
 
 class XYPoint(NamedTuple):
