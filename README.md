@@ -74,3 +74,9 @@ INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
 + 如果本插件对你有帮助，不要忘了点个Star~
 + 本项目仅供学习使用，请勿用于商业用途
 + [GPL-3.0 License](https://github.com/KimigaiiWuyi/GenshinUID/blob/main/LICENSE) ©
+
+---
+## 筆記(自用)
+models.py — 加地圖ID  
+download.py — 加world API  
+get_map_image.py — 加path & path check  
