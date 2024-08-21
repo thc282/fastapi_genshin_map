@@ -1,7 +1,7 @@
 <p align="center">
-  <a href="https://github.com/KimigaiiWuyi/GenshinUID/"><img src="https://s2.loli.net/2022/01/31/kwCIl3cF1Z2GxnR.png" width="256" height="256" alt="Fastapi_Genshin_Map"></a>
+  <a href="https://github.com/KimigaiiWuyi/fastapi_genshin_map/"><img src="https://s2.loli.net/2022/01/31/kwCIl3cF1Z2GxnR.png" width="256" height="256" alt="Fastapi_Genshin_Map"></a>
 </p>
-<h1 align = "center">Fastapi_Genshin_Map</h1>
+<h1 align = "center">Fastapi_Genshin_Map<br>(from: KimigaiiWuyi)</h1>
 <h4 align = "center">✨一个基于<a href="https://github.com/MingxuanGame/GenshinMap" target="_blank">GenshinMap</a>的地图API✨</h4>
 
 ## 丨安装
@@ -11,36 +11,54 @@
 2. `cd` 至 `fastapi_genshin_map`
 3. `python main.py`
 
-## 丨示例
+## ❗❗注意事項
+由於獲取所有地圖的時間長, 請耐心等候
+直至出現以下INFO才算完結
+```
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+```
 
-[示例地址](http://map.minigg.cn/map/get_map)
+### 存放位置(資料夾)
+`fastapi_genshin_map\map_data`
+
 
 ## 丨使用
+### 獲取資源點地圖(全/選擇)
+由於暫時還沒有處理好輸入
 
-### 获取资源点地图(全)
-终结点：`/map/get_map`
-|  字段   | 类型  | 说明  |
-|  ----  | ----  | ----  |
-| resource_name  | str | 资源名称 |
-| map_id  | str/int | 地图ID |
-| is_cluster | bool | 是否使用聚类算法 |
+以下給懂改coding的人
+```py
+# get_map_image.py
+'line 60 --' # 指定地圖id或留空拿全部地圖
+'line 61 --'  desired_map_ids = {35}
+```
+### 留空 — 獲取所有地圖 (提瓦特, 淵下宮, 層岩下層, 舊日之海, 希穆蘭卡)
+例子:  
+拿全部 — `desired_map_ids = {}`
+
+### 填ID — 獲取對應地圖 
+| ID | 地圖 |
+| - | - |
+| 2 | 提瓦特 |
+| 7 | 淵下宫 |
+| 9 | 層岩巨淵·地下礦區 |
+| 34 | 舊日之海 |
+| 35 | 希穆蘭卡 |
+
+例子:  
+拿提瓦特, 淵下宮, 希穆蘭卡 — `desired_map_ids = {2, 7, 35}`  
+拿提瓦特, 舊日之海 — `desired_map_ids = {2, 34}`
 
 ## 丨感谢
-
 - [GenshinMap](https://github.com/MingxuanGame/GenshinMap) - 没有这个项目就不会有这个作品
+- [KimigaiiWuyi](https://github.com/KimigaiiWuyi/fastapi_genshin_map/) - 感謝你的更改
 
 ## 丨许可证
-
 该项目以`GPL-3.0 license`开源, 这意味着使用该项目的项目也将以`GPL-V3`开源
 
 ## 丨其他
-
 + 如果对本插件有功能建议&Bug报告，欢迎提Issue & Pr，每一条都会详细看过
 + 如果本插件对你有帮助，不要忘了点个Star~
 + 本项目仅供学习使用，请勿用于商业用途
-+ Bot项目: [GenshinUID](https://github.com/KimigaiiWuyi/GenshinUID)
-+ [爱发电](https://afdian.net/@KimigaiiWuyi)
-+ [GPL-3.0 License](https://github.com/KimigaiiWuyi/GenshinUID/blob/main/LICENSE) ©[@KimigaiiWuyi](https://github.com/KimigaiiWuyi)
-
-## 丨返回图示例
-![测试.jpg](https://s2.loli.net/2023/10/18/Khd5LRQF3HqrEVD.jpg)
++ [GPL-3.0 License](https://github.com/KimigaiiWuyi/GenshinUID/blob/main/LICENSE) ©
