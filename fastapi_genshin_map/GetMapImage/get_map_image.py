@@ -21,7 +21,9 @@ ICON_PATH = Path(__file__).parent / "icon_data"
 CHASM_PATH = MAP / "chasm.png"
 ENKANOMIYA_PATH = MAP / "enkanomiya.png"
 TEYVAT_PATH = MAP / "teyvat.png"
+SIMULANKA_PATH = MAP / "Simulanka.png"
 
+'''
 _path = Path(__file__).parent / "map.yaml"
 with open(_path, "r", encoding="utf-8") as ymlfile:
     resource_aliases = yaml.load(ymlfile, Loader=yaml.SafeLoader)
@@ -34,8 +36,10 @@ MAP_ID_DICT = {
     # MapID.golden_apple_archipelago,  # 金苹果群岛
 }
 
+
 if not ICON_PATH.exists():
     ICON_PATH.mkdir(exist_ok=True)
+'''
 
 
 @router.on_event("startup")
@@ -45,73 +49,81 @@ async def create_genshin_map():
         and ENKANOMIYA_PATH.exists()
         and TEYVAT_PATH.exists()
         and RESOURCE_PATH.exists()
+        and SIMULANKA_PATH.exists()
     ):
         logger.info("****************** 开始地图API服务 *****************")
         return
     logger.info("****************** 地图API服务进行初始化 *****************")
-    mark_god_pic = Image.open(TEXT_PATH / "mark_god.png")
-    mark_trans_pic = Image.open(TEXT_PATH / "mark_trans.png")
-    for map_id in models.MapID:
-        maps = await request.get_maps(map_id)
-        points = await request.get_points(map_id)
-        # 获取七天神像锚点
-        mark_god = utils.get_points_by_id(2, points)
-        # 获取传送锚点
-        mark_trans = utils.get_points_by_id(3, points)
-        # 转换两个锚点为标准坐标
-        mark_god_converted = utils.convert_pos(mark_god, maps.detail.origin)
-        mark_trans_converted = utils.convert_pos(
-            mark_trans,
-            maps.detail.origin,
-        )
-        maps = await request.get_maps(map_id)
-        # map_img = await utils.make_map(maps.detail)
-        map_img = await make_P0_map(maps.id)
-        for mark_god_point in mark_god_converted:
-            map_img.paste(
-                mark_god_pic,
-                (int(mark_god_point.x) - 32, int(mark_god_point.y) - 64),
-                mark_god_pic,
-            )
-        for mark_trans_point in mark_trans_converted:
-            map_img.paste(
-                mark_trans_pic,
-                (int(mark_trans_point.x) - 32, int(mark_trans_point.y) - 64),
-                mark_trans_pic,
-            )
-        if not MAP.exists():
-            MAP.mkdir()
-        map_img.save(MAP / f"{map_id.name}.png")
-        logger.info("****************** 开始绘制 *****************")
-        trees = await request.get_labels(map_id)
-        '''
-        for tree in trees:
-            for label in tree.children:
-                await get_map_response(
-                    "PRE-START",
-                    label.name,
-                    map_id,
-                    False,
-                )
-        '''
-        # 改成并发
-        import asyncio
+    # mark_god_pic = Image.open(TEXT_PATH / "mark_god.png")
+    # mark_trans_pic = Image.open(TEXT_PATH / "mark_trans.png")
 
-        tasks = []
-        for tree in trees:
-            for label in tree.children:
-                tasks.append(
-                    get_map_response(
-                        "PRE-START",
-                        label.name,
-                        map_id,
-                        False,
-                    )
+    # 指定地圖id或留空拿全部地圖
+    desired_map_ids = {35}
+    
+    for map_id in models.MapID:
+        if map_id.value in desired_map_ids or desired_map_ids == {}:
+            maps = await request.get_maps(map_id)
+            '''
+            points = await request.get_points(map_id)
+            # 获取七天神像锚点
+            mark_god = utils.get_points_by_id(2, points)
+            # 获取传送锚点
+            mark_trans = utils.get_points_by_id(3, points)
+            # 转换两个锚点为标准坐标
+            mark_god_converted = utils.convert_pos(mark_god, maps.detail.origin)
+            mark_trans_converted = utils.convert_pos(
+                mark_trans,
+                maps.detail.origin,
+            )
+            
+            # maps = await request.get_maps(map_id)
+            # map_img = await utils.make_map(maps.detail)
+            '''
+            
+            map_img = await make_P0_map(maps.id)
+            
+            '''
+            for mark_god_point in mark_god_converted:
+                map_img.paste(
+                    mark_god_pic,
+                    (int(mark_god_point.x) - 32, int(mark_god_point.y) - 64),
+                    mark_god_pic,
                 )
-        await asyncio.gather(*tasks)
+            for mark_trans_point in mark_trans_converted:
+                map_img.paste(
+                    mark_trans_pic,
+                    (int(mark_trans_point.x) - 32, int(mark_trans_point.y) - 64),
+                    mark_trans_pic,
+                )
+            '''
+            if not MAP.exists():
+                MAP.mkdir()
+            map_img.save(MAP / f"{map_id.name}.png")
+            logger.info("****************** 开始绘制 *****************")
+    
+            '''
+            trees = await request.get_labels(map_id)
+    
+            # 改成并发
+            import asyncio
+    
+            tasks = []
+            for tree in trees:
+                for label in tree.children:
+                    tasks.append(
+                        get_map_response(
+                            "PRE-START",
+                            label.name,
+                            map_id,
+                            False,
+                        )
+                    )
+            await asyncio.gather(*tasks)
+            '''
     logger.info("****************** 开始地图API服务 *****************")
 
 
+'''
 async def get_map_response(
     prefix: str,
     resource_name: str,
@@ -328,3 +340,4 @@ async def get_map_by_point(
         "retcode": -1,
         "message": f"资源点 - {resource_name} 不存在！",
     }
+'''
