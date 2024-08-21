@@ -17,7 +17,7 @@ from .models import (
 )
 
 API_CLIENT = AsyncClient(
-    base_url="https://waf-api-takumi.mihoyo.com/common/map_user/ys_obc"
+    base_url="https://sg-public-api-static.hoyolab.com/common/map_user/ys_obc"
 )
 Spots = Dict[int, List[Spot]]
 
