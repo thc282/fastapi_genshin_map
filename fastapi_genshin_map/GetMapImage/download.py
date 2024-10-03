@@ -68,8 +68,8 @@ async def make_P0_map(map_id: int) -> Image.Image:
 
     async with AsyncClient() as client:
         TASK = []
-        for i in range(0, 72):
-            for j in range(0, 72):
+        for i in range(0, 82):
+            for j in range(0, 82):
                 if (slice_path / f'{map_id}_{i}_{j}.webp').exists():
                     logger.info(f'文件 {map_id}_{i}_{j}.webp 已存在！跳过下载..')
                     if x < i:
