@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import FastAPI
+from fastapi import FastAPI
 from GetMapImage import get_map_image
 
 gsm = FastAPI(title='GsMAP', description='GenshinMap API')

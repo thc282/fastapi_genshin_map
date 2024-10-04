@@ -5,6 +5,7 @@ from PIL import Image
 import asyncio
 from .logger import logger
 from pathlib import Path
+from .GenshinMap.genshinmap.models import DetailV2
 
 slice_path = Path(__file__).parent / 'slice_data'
 slice_path.mkdir(parents=True, exist_ok=True)
@@ -59,8 +60,11 @@ async def download_P0_img(
     logger.info(f'请求成功，文件 [{map_id}] | {i}_{j}.webp 已保存！')
 
 
-async def make_P0_map(map_id: int) -> Image.Image:
+async def make_P0_map(map_id: int, detail_v2: DetailV2) -> Image.Image:
     global x, y, _map_id
+
+    x0, y0 = (val // 256 for val in detail_v2.padding)
+    x1, y1 = detail_v2.calculate_size()
 
     if map_id != _map_id:
         _map_id = map_id
@@ -68,8 +72,9 @@ async def make_P0_map(map_id: int) -> Image.Image:
 
     async with AsyncClient() as client:
         TASK = []
-        for i in range(0, 82):
-            for j in range(0, 82):
+        """
+        for i in range(0, 99):
+            for j in range(0, 99):
                 if (slice_path / f'{map_id}_{i}_{j}.webp').exists():
                     logger.info(f'文件 {map_id}_{i}_{j}.webp 已存在！跳过下载..')
                     if x < i:
@@ -77,22 +82,38 @@ async def make_P0_map(map_id: int) -> Image.Image:
                     if y < j:
                         y = j
                     continue
-
-                TASK.append(download_P0_img(client, map_id, i, j))
+                else:
+                    TASK.append(download_P0_img(client, map_id, i, j))
                 if len(TASK) >= 15:
                     await asyncio.gather(*TASK)
                     await asyncio.sleep(0.5)
                     TASK.clear()
+        """
+        for i in range(x0, x1):
+            for j in range(y0, y1):
+                if (slice_path / f'{map_id}_{i}_{j}.webp').exists():
+                    logger.info(f'文件 {map_id}_{i}_{j}.webp 已存在！跳过下载..')
+                    continue
+                else:
+                    TASK.append(download_P0_img(client, map_id, i, j))
+                if len(TASK) >= 15:
+                    await asyncio.gather(*TASK)
+                    await asyncio.sleep(0.5)
+                    TASK.clear()
+                    
         if TASK:
             await asyncio.gather(*TASK)
             TASK.clear()
 
+    """
     if map_id == 2:
-        ox, oy = 2048, 1024
+        ox, oy = -2048, -1024
     else:
         ox, oy = 0, 0
+    """ 
+    
+    """
     big_img = Image.new('RGBA', (x * 256 + ox, y * 256 + oy))
-
     logger.info(f'【{map_id}切片下载完成, 开始合并】x: {x}, y: {y}')
     for i in range(x):
         for j in range(y):
@@ -100,5 +121,17 @@ async def make_P0_map(map_id: int) -> Image.Image:
             img = Image.open(slice_path / f'{map_id}_{i}_{j}.webp')
             img = img.convert('RGBA')
             big_img.paste(img, (i * 256 + ox, j * 256 + oy), img)
+
+    """
+    big_img = Image.new('RGBA', ((x1 - x0) * 256, (y1 - y0) * 256))
+    logger.info(f'【{map_id}切片下载完成, 开始合并】x: {x1}, y: {y1}')
+    for i in range(x0, x1):
+        for j in range(y0, y1):
+            logger.info(f'合并: {i} {j}')
+            img = Image.open(slice_path / f'{map_id}_{i}_{j}.webp')
+            img = img.convert('RGBA')
+            paste_x = (i - x0) * 256
+            paste_y = (j - y0) * 256
+            big_img.paste(img, (paste_x, paste_y), img)
 
     return big_img

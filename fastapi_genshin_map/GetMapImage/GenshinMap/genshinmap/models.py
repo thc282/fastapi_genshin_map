@@ -16,7 +16,7 @@ class MapID(IntEnum):
     """淵下宫"""
     chasm = 9
     """層岩巨淵·地下礦區"""
-    # golden_apple_archipelago = 12
+    # golden_apple_archipelago = 10
     """金蘋果群島"""
     sea_of_bygone_eras = 34
     """舊日之海"""
@@ -88,6 +88,19 @@ class Maps(BaseModel):
         return urls
 
 
+class DetailV2(BaseModel):
+    total_size: Tuple[int, int]
+    padding: Tuple[int, int]
+    origin: Tuple[int, int]
+    map_version: str
+    min_zoom: int
+    max_zoom: int
+    original_map_size: Tuple[int, int]
+
+    def calculate_size(self) -> Tuple[int, int]:
+        return tuple((t - p) // 256 for t, p in zip(self.total_size, self.padding))
+
+
 class MapInfo(BaseModel):
     id: int
     name: str
@@ -98,6 +111,7 @@ class MapInfo(BaseModel):
     children: list
     icon: Optional[HttpUrl]
     ch_ext: Optional[str]
+    detail_v2: Optional[DetailV2]
 
     @validator("detail", pre=True)
     def parse_detail(cls, v):
@@ -106,6 +120,17 @@ class MapInfo(BaseModel):
                 return None
             try:
                 return Maps.parse_raw(v)
+            except json.JSONDecodeError:
+                return v
+        return v
+
+    @validator("detail_v2", pre=True)
+    def parse_detail_v2(cls, v):
+        if isinstance(v, str):
+            if v == "":
+                return None
+            try:
+                return DetailV2.parse_raw(v)
             except json.JSONDecodeError:
                 return v
         return v

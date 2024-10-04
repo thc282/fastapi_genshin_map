@@ -25,16 +25,21 @@ Spots = Dict[int, List[Spot]]
 async def _request(
     endpoint: str, client: AsyncClient = API_CLIENT
 ) -> Dict[str, Any]:
+    retries, max_retries = 0, 20
     logger.info(f"[API] 正在访问 {endpoint}")
-    while True:
+    while retries < max_retries:
         try:
-            resp = await client.get(endpoint)
+            resp = await client.get(endpoint, timeout=5)
             resp.raise_for_status()
             data: Dict[str, Any] = resp.json()
-            logger.info(f"[API] {data}")
+            # logger.info(f"[API] {data}")
             if data["retcode"] != 0:
                 raise StatusError(data["retcode"], data["message"])
             return data["data"]
+        except StatusError as se:
+            retries += 1
+            logger.warning(f"[API] Status Error (Attempt {retries}/{max_retries}): {se}")
+            continue
         except Exception as e:
             if "Timeout" in str(e):
                 logger.warning(f"[API] {e}")
@@ -85,7 +90,8 @@ async def get_maps(map_id: MapID) -> MapInfo:
     data = await _request(
         f"/v3/map/info?map_id={map_id}&app_sn=ys_obc&lang=zh-cn"
     )
-    return MapInfo.parse_obj(data["info"])
+    if data:
+        return MapInfo.parse_obj(data["info"])
 
 
 async def get_spot_from_game(
