@@ -86,6 +86,10 @@ async def create_genshin_map():
             # logger.info(maps.detail_v2.calculate_size_difference())
             map_img = await make_P0_map(maps.id, maps.detail_v2)
             # logger.info(map_img)
+
+            # logger.info(maps.detail_v2.calculate_size_difference())
+            map_img = await make_P0_map(maps.id, maps.detail_v2)
+            # logger.info(map_img)
             '''
             for mark_god_point in mark_god_converted:
                 map_img.paste(
@@ -104,6 +108,7 @@ async def create_genshin_map():
                 MAP.mkdir()
             map_img.save(MAP / f"{map_id.name}.png")
             logger.info("****************** 开始绘制 *****************")
+
 
             '''
             trees = await request.get_labels(map_id)
