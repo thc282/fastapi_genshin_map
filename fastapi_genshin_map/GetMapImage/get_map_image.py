@@ -59,10 +59,13 @@ async def create_genshin_map():
 
     # 指定地圖id或留空拿全部地圖
     desired_map_ids = {}
-    
+
     for map_id in models.MapID:
         if map_id.value in desired_map_ids or desired_map_ids == {}:
             maps = await request.get_maps(map_id)
+            if maps is None:
+                logger.warning(f"地圖 {map_id.name} 沒有數據. 跳過...")
+                continue
             '''
             points = await request.get_points(map_id)
             # 获取七天神像锚点
@@ -79,9 +82,10 @@ async def create_genshin_map():
             # maps = await request.get_maps(map_id)
             # map_img = await utils.make_map(maps.detail)
             '''
-            
-            map_img = await make_P0_map(maps.id)
-            
+
+            # logger.info(maps.detail_v2.calculate_size_difference())
+            map_img = await make_P0_map(maps.id, maps.detail_v2)
+            # logger.info(map_img)
             '''
             for mark_god_point in mark_god_converted:
                 map_img.paste(
@@ -100,7 +104,7 @@ async def create_genshin_map():
                 MAP.mkdir()
             map_img.save(MAP / f"{map_id.name}.png")
             logger.info("****************** 开始绘制 *****************")
-    
+
             '''
             trees = await request.get_labels(map_id)
     
