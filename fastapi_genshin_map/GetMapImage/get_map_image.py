@@ -82,11 +82,6 @@ async def create_genshin_map():
             # maps = await request.get_maps(map_id)
             # map_img = await utils.make_map(maps.detail)
             '''
-
-            # logger.info(maps.detail_v2.calculate_size_difference())
-            map_img = await make_P0_map(maps.id, maps.detail_v2)
-            # logger.info(map_img)
-
             # logger.info(maps.detail_v2.calculate_size_difference())
             map_img = await make_P0_map(maps.id, maps.detail_v2)
             # logger.info(map_img)
