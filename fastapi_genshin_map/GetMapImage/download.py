@@ -12,8 +12,9 @@ slice_path.mkdir(parents=True, exist_ok=True)
 
 BASE = 'https://act-webstatic.hoyoverse.com/map_manage/map'
 
+#this part is for checking
 world = {
-    2: '/2/c64d14ffe710540c50df8df05c96f8b5',
+    2: '/2/9e1c6c4d2bac013bc0cdd81c58733f47',
     7: '/7/2d0a83cf40ca8f5a2ef0b1a5199fc407',
     9: '/9/96733f1194aed673f3cdafee4f56b2d2',
     34: '/34/9af6a4747bab91f96c598f8e8a9b7ce5',
