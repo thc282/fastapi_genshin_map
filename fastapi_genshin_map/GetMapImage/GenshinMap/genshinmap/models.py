@@ -106,34 +106,32 @@ class MapInfo(BaseModel):
     name: str
     parent_id: int
     depth: int
-    detail: Optional[Maps]
+    detail: Optional[Maps] = None
+    detail_v2: Optional[DetailV2] = None
     node_type: int
     children: list
     icon: Optional[HttpUrl]
     ch_ext: Optional[str]
-    detail_v2: Optional[DetailV2]
 
     @validator("detail", pre=True)
-    def parse_detail(cls, v):
-        if isinstance(v, str):
-            if v == "":
-                return None
-            try:
-                return Maps.parse_raw(v)
-            except json.JSONDecodeError:
-                return v
-        return v
+    def detail_str_to_maps(cls, v):
+        if not v:
+            return None
+        return Maps.parse_raw(v)
 
     @validator("detail_v2", pre=True)
-    def parse_detail_v2(cls, v):
-        if isinstance(v, str):
-            if v == "":
-                return None
-            try:
-                return DetailV2.parse_raw(v)
-            except json.JSONDecodeError:
-                return v
-        return v
+    def detail_v2_str_to_maps(cls, v):
+        if not v:
+            return None
+        if isinstance(v, DetailV2):  # 如果已经是 DetailV2 对象，直接返回
+            return v
+        return DetailV2.parse_obj(v)  # 解析为 DetailV2
+
+    @property
+    def get_detail(self):
+        if self.detail_v2:
+            return self.detail_v2
+        return self.detail
 
 
 class XYPoint(NamedTuple):
