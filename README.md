@@ -77,9 +77,11 @@ INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
 
 ---
 ## 筆記(自用)
+### 當有新地圖
 models.py — 加地圖ID  
 download.py — 加world API  
 get_map_image.py — 加path & path check
 
-get_map_image.py — 改id拿地圖
-download.py — 更改world checking path
+### 每次更新
+download.py — 更改world URL path  
+get_map_image.py — 改id拿地圖(預設提瓦特)  
