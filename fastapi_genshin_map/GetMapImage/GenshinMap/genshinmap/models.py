@@ -98,7 +98,7 @@ class DetailV2(BaseModel):
     original_map_size: Tuple[int, int]
 
     def calculate_size(self) -> Tuple[int, int]:
-        return tuple((t - p) // 256 for t, p in zip(self.total_size, self.padding))
+        return tuple((t - p + 255) // 256 for t, p in zip(self.total_size, self.padding))
 
 
 class MapInfo(BaseModel):

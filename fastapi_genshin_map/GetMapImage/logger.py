@@ -1,9 +1,15 @@
 import logging
+import sys
+import io
 
 import fastapi
 import rollbar
 from rollbar.contrib.fastapi import LoggerMiddleware
 from rollbar.logger import RollbarHandler
+
+# 强制标准输出使用UTF-8编码（解决中文乱码）
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 # Initialize Rollbar SDK with your server-side access token
 rollbar.init(

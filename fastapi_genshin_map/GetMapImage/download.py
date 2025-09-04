@@ -14,7 +14,7 @@ BASE = 'https://act-webstatic.hoyoverse.com/map_manage/map'
 
 #this part is for checking
 world = {
-    2: '/2/b8dda0da78acc2aba67a395117bf0bc2',
+    2: '/2/84e91c043f30df2655d34a5543be7b17',
     7: '/7/2d0a83cf40ca8f5a2ef0b1a5199fc407',
     9: '/9/96733f1194aed673f3cdafee4f56b2d2',
     34: '/34/9af6a4747bab91f96c598f8e8a9b7ce5',
