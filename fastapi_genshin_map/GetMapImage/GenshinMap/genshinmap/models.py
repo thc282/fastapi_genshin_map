@@ -4,7 +4,6 @@ from enum import IntEnum
 from typing import List, Tuple, Optional, NamedTuple
 
 from pydantic import HttpUrl, BaseModel, validator
-import json
 
 
 class MapID(IntEnum):
@@ -22,6 +21,8 @@ class MapID(IntEnum):
     """舊日之海"""
     Simulanka = 35
     """希穆蘭卡"""
+    holy_mountain = 36
+    """遠古聖山"""
 
 
 class Label(BaseModel):
@@ -75,10 +76,14 @@ class Slice(BaseModel):
 
 
 class Maps(BaseModel):
-    slices: List[HttpUrl]
-    origin: List[int]
-    total_size: List[int]
-    padding: List[int]
+    slices: Optional[List[HttpUrl]] = None
+    origin: Optional[List[int]] = None
+    total_size: Optional[List[int]] = None
+    padding: Optional[List[int]] = None
+    map_version: Optional[str] = None
+    min_zoom: Optional[int] = None
+    max_zoom: Optional[int] = None
+    original_map_size: Optional[List[int]] = None
 
     @validator("slices", pre=True)
     def slices_to_list(cls, v):
